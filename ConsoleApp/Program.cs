@@ -39,7 +39,11 @@ namespace ConsoleApp
             await myContainer.SaveChangesAsync();
             // view status after save 
             LogTrackedPerson(myContainer);
-
+            // to update 
+            var firstPerson = people.ToList().First();
+            firstPerson.FirstName = "tes";
+            myContainer.UpdatePerson(firstPerson);
+            myContainer.SaveChanges();
 
         }
         public static void LogTrackedPerson(MyLocalContainer container)
