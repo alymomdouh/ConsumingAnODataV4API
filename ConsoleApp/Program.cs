@@ -23,7 +23,26 @@ namespace ConsoleApp
             var peopleQuery = autoContainer.People.Where(p => p.PersonId == 1) as DataServiceQuery;
             var recordStoresQuery = autoContainer.RecordStores; 
             var batchResponse = await autoContainer.ExecuteBatchAsync(peopleQuery, recordStoresQuery);
-
+            // view the batch 
+            foreach (var operationResponse in batchResponse)
+            {
+                var peopleResponse = operationResponse as QueryOperationResponse<AirVinyl.Person>;
+                if (peopleResponse != null)
+                {
+                    foreach (AirVinyl.Person person in peopleResponse)
+                    {
+                        Console.WriteLine($"{person.PersonId} {person.FirstName} {person.LastName}");
+                    }
+                }
+                var recordsStoresResponse = operationResponse as QueryOperationResponse<RecordStore>;
+                if (recordsStoresResponse != null)
+                {
+                    foreach (var recordStore in recordsStoresResponse)
+                    {
+                        Console.WriteLine($"{recordStore.RecordStoreId} {recordStore.Name}");
+                    }
+                }
+            }
         }
         public async static Task CodeGeneration()
         {
