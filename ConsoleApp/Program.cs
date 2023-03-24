@@ -1,4 +1,5 @@
 ﻿using AirVinyl;
+using Microsoft.OData.Client;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +13,20 @@ namespace ConsoleApp
         {
 
             Console.WriteLine("Hello World!");
+            var autoContainer = new AirVinylContainer(new Uri(BaseUrl));
 
+            // make Batch
+
+            // var people = await autoContainer.People.ExecuteAsync();
+            // var recordStores = await autoContainer.RecordStores.ExecuteAsync();
+
+            var peopleQuery = autoContainer.People.Where(p => p.PersonId == 1) as DataServiceQuery;
+            var recordStoresQuery = autoContainer.RecordStores; 
+            var batchResponse = await autoContainer.ExecuteBatchAsync(peopleQuery, recordStoresQuery);
+
+        }
+        public async static Task CodeGeneration()
+        {
             // call auto generated debcontext container 
 
             var autoContainer = new AirVinylContainer(new Uri(BaseUrl));
@@ -47,9 +61,7 @@ namespace ConsoleApp
                 //    Console.WriteLine($"---- {vinylRecord.VinylRecordId} {vinylRecord.Title}");
                 //}
             }
-
         }
-
         public async static Task NoCodeGeneration()
         {
             var myContainer = new MyLocalContainer(new Uri(BaseUrl));
