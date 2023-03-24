@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
-    internal class Program
+    class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            var myContainer = new MyLocalContainer(new Uri("https://localhost:5001/odata"));
+
+            
+
         }
     }
 }
