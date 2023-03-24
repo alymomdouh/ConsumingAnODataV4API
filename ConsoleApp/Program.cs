@@ -21,7 +21,7 @@ namespace ConsoleApp
             // var recordStores = await autoContainer.RecordStores.ExecuteAsync();
 
             var peopleQuery = autoContainer.People.Where(p => p.PersonId == 1) as DataServiceQuery;
-            var recordStoresQuery = autoContainer.RecordStores; 
+            var recordStoresQuery = autoContainer.RecordStores;
             var batchResponse = await autoContainer.ExecuteBatchAsync(peopleQuery, recordStoresQuery);
             // view the batch 
             foreach (var operationResponse in batchResponse)
@@ -43,6 +43,39 @@ namespace ConsoleApp
                     }
                 }
             }
+            // update,add to batch 
+            autoContainer.AddToPeople(new AirVinyl.Person()
+            {
+                FirstName = "John the First",
+                LastName = "Smith",
+                AmountOfCashToSpend = 400,
+                DateOfBirth = new DateTimeOffset(new DateTime(1980, 5, 10)),
+                Email = "someaddress@someserver.com",
+                NumberOfRecordsOnWishList = 10,
+                Gender = Gender.Male
+            });
+
+            autoContainer.AddToPeople(new AirVinyl.Person()
+            {
+                FirstName = "John the Second",
+                LastName = "Smith",
+                AmountOfCashToSpend = 400,
+                DateOfBirth = new DateTimeOffset(new DateTime(1980, 5, 10)),
+                Email = "someaddress@someserver.com",
+                NumberOfRecordsOnWishList = 10,
+                Gender = Gender.Male
+            });
+            // save to batch with options
+            await autoContainer.SaveChangesAsync(SaveChangesOptions.BatchWithSingleChangeset);// if one fail other not effact
+            await autoContainer.SaveChangesAsync(SaveChangesOptions.BatchWithIndependentOperations);// if one fail all will fail
+
+            var people = autoContainer.People;
+            foreach (var person in people)
+            {
+                Console.WriteLine($"{person.PersonId} {person.FirstName} {person.LastName}");
+            }
+
+            Console.ReadLine();
         }
         public async static Task CodeGeneration()
         {
