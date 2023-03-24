@@ -17,6 +17,25 @@ namespace ConsoleApp
 
             var autoContainer = new AirVinylContainer(new Uri(BaseUrl));
             var people = autoContainer.People.Execute();
+
+            // working with query options 
+            // filters by QueryOptions
+            var filterpeople = await autoContainer.People
+                .AddQueryOption("$expand", "VinylRecords")
+                .AddQueryOption("$select", "PersonId,FirstName")
+                .AddQueryOption("$orderby", "FirstName")
+                .AddQueryOption("$top", "2")
+                .AddQueryOption("$skip", "4")
+                .ExecuteAsync();
+
+            // filters by Linq
+            var filterpeople2 = autoContainer.People
+                //.Expand(p => p.VinylRecords)
+                .OrderBy(p => p.FirstName)
+                .Skip(4)
+                .Take(2)//that mean top2
+                .Select(p => new { p.PersonId, p.FirstName, VinylRecords = p.VinylRecords });
+
             foreach (var person in people.ToList())
             {
                 Console.WriteLine($"{person.PersonId} {person.FirstName} {person.LastName}");
@@ -28,6 +47,7 @@ namespace ConsoleApp
                 //    Console.WriteLine($"---- {vinylRecord.VinylRecordId} {vinylRecord.Title}");
                 //}
             }
+
         }
 
         public async static Task NoCodeGeneration()
